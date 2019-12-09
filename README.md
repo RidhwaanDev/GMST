@@ -1,7 +1,8 @@
 # Segments Drawer
 
 A tool to help debug/draw encoded segments from the Transloc API. 
-See : [Google Polyline Encoding Algoritihim](https://developers.google.com/maps/documentation/utilities/polylinealgorithm)
+
+see: [Google Polyline Encoding Algoritihim](https://developers.google.com/maps/documentation/utilities/polylinealgorithm)
 
 
 ## how to use
