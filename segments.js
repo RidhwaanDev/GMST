@@ -73,6 +73,7 @@ function addLatLngToPoly(latLng, poly) {
 }
 
 function clean(result) {
+  // TODO fix
   const b = new Buffer(result.data,'binary');
   const str = b.toString();
   const regexp = /"(\d{9})"/;
