@@ -1,4 +1,4 @@
-# Segments Drawer
+# GMST
 
 A tool to help debug/draw encoded segments from the Transloc API. 
 
