@@ -26,14 +26,7 @@ function initMap() {
     zoom: 14,
     center: { lat: locations.lat, lng: locations.lng }
   });
-
-  poly = new google.maps.Polyline({
-    strokeColor: '#000000',
-    strokeOpacity: 1.0,
-    strokeWeight: 5,
-  });
-
-  getSegmentsForRoute();
+  getAllSegments();
 }
 
 function getSegmentsForRoute() {
@@ -57,8 +50,72 @@ function getSegmentsForRoute() {
     }
   });
 }
+function getAllRoutes(callback){
+  $.ajax({
+    url: "https://transloc-api-1-2.p.rapidapi.com/routes.json",
+    contentType: 'application/json; charset=utf-8',
+    type: "GET",
+    data: {
+      "agencies": 1323,
+    },
+    headers: {
+      "X-RapidAPI-Host": "transloc-api-1-2.p.rapidapi.com",
+      "X-RapidAPI-Key": "hHcLr1qWHDmshwibREtIrhryL9bcp1Fw9AQjsnCiZyEzRrJKOS"
+    },
+
+      success: function (result) {
+        callback(result);
+    }
+  });
+
+}
+function getAllSegments(){
+ $.ajax({
+    url: "https://transloc-api-1-2.p.rapidapi.com/segments.json",
+    contentType: 'application/json; charset=utf-8',
+    type: "GET",
+    data: {
+      "agencies": 1323,
+    },
+    headers: {
+      "X-RapidAPI-Host": "transloc-api-1-2.p.rapidapi.com",
+      "X-RapidAPI-Key": "hHcLr1qWHDmshwibREtIrhryL9bcp1Fw9AQjsnCiZyEzRrJKOS"
+    },
+      success: function (result) {
+        drawAllSegments(result);
+    }
+  });
+}
+function drawAllSegments(result){
+  const segments = result.data;
+  for(const key of Object.keys(segments)){
+    //
+  }
+  getAllRoutes(function(result){
+    const data = (result.data)['1323'];
+    data.forEach(route => {
+      const color_random = randomColor();
+      route.segments.forEach(it => {
+        const m_polyline = new google.maps.Polyline({
+          strokeColor : color_random,
+          strokeOpacity: 1.0,
+          strokeWeight: 5,
+        });
+
+        let array_latlng = google.maps.geometry.encoding.decodePath(segments[it[0]]);
+        array_latlng.forEach(latlng => {addLatLngToPoly(latlng,m_polyline)});
+
+        m_polyline.setMap(map);
+
+      });
+
+
+    });
+  });
+}
+// draw a single segment from a polyline encoding
 function drawSingleSegment(encoding){
-  let array_latlng = google.maps.geometry.encoding.decodePath(segments[key]);
+  let array_latlng = google.maps.geometry.encoding.decodePath(encoding);
   const spoly = new google.maps.Polyline({
     strokeColor: randomColor(),
     strokeOpacity: 1.0,
@@ -66,28 +123,22 @@ function drawSingleSegment(encoding){
   });
   array_latlng.forEach(latlng => { addLatLngToPoly(latlng, spoly) });
   spoly.setMap(map);
-
 }
-function randomColor(){
+
+
+ function randomColor(){
 return  '#' + (function co(lor){   return (lor +=
     [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
     && (lor.length == 6) ?  lor : co(lor); })('');
-  
 }
+
 function parseSegments(result) {
   // console.log(result);
   const segments = result.data;
   for (let key of Object.keys(segments)) {
     let array_latlng = google.maps.geometry.encoding.decodePath(segments[key]);
     console.log(segments[key]);
-    const spoly = new google.maps.Polyline({
-      strokeColor: '#000000',
-      strokeOpacity: 1.0,
-      strokeWeight: 5,
-    });
-  
-    array_latlng.forEach(latlng => { addLatLngToPoly(latlng, spoly) });
-    spoly.setMap(map);
+    drawSingleSegment(segments[key]);
   }
  
 }
