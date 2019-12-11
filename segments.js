@@ -13,14 +13,6 @@ const EE = "4012624";
 const F = "4012626";
 const H = "4012628";
 
-const polyine_options = {
-  "A": {
-  },
-
-  "LX": {
-  },
-}
-
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
@@ -44,12 +36,12 @@ function getSegmentsForRoute() {
       "X-RapidAPI-Host": "transloc-api-1-2.p.rapidapi.com",
       "X-RapidAPI-Key": "hHcLr1qWHDmshwibREtIrhryL9bcp1Fw9AQjsnCiZyEzRrJKOS"
     },
-
       success: function (result) {
       parseSegments((result));
     }
   });
 }
+
 function getAllRoutes(callback){
   $.ajax({
     url: "https://transloc-api-1-2.p.rapidapi.com/routes.json",
@@ -67,8 +59,7 @@ function getAllRoutes(callback){
         callback(result);
     }
   });
-
-}
+
 function getAllSegments(){
  $.ajax({
     url: "https://transloc-api-1-2.p.rapidapi.com/segments.json",
@@ -102,10 +93,7 @@ function drawAllSegments(result){
           strokeWeight: 5,
         });
 
-        let array_latlng = google.maps.geometry.encoding.decodePath(segments[it[0]]);
-        array_latlng.forEach(latlng => {addLatLngToPoly(latlng,m_polyline)});
-
-        m_polyline.setMap(map);
+        drawSingleSegment(segments[it[0]]);
 
       });
 
@@ -126,10 +114,10 @@ function drawSingleSegment(encoding){
 }
 
 
- function randomColor(){
-return  '#' + (function co(lor){   return (lor +=
-    [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
-    && (lor.length == 6) ?  lor : co(lor); })('');
+function randomColor(){
+  return  '#' + (function co(lor){   return (lor +=
+	[0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
+      && (lor.length == 6) ?  lor : co(lor); })('');
 }
 
 function parseSegments(result) {
@@ -140,7 +128,6 @@ function parseSegments(result) {
     console.log(segments[key]);
     drawSingleSegment(segments[key]);
   }
- 
 }
 
 function addLatLngToPoly(latLng, poly) {
