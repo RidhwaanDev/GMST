@@ -59,7 +59,7 @@ function getAllRoutes(callback){
         callback(result);
     }
   });
-
+
 function getAllSegments(){
  $.ajax({
     url: "https://transloc-api-1-2.p.rapidapi.com/segments.json",
@@ -77,30 +77,24 @@ function getAllSegments(){
     }
   });
 }
+
 function drawAllSegments(result){
   const segments = result.data;
-  for(const key of Object.keys(segments)){
-    //
-  }
+
   getAllRoutes(function(result){
     const data = (result.data)['1323'];
     data.forEach(route => {
+
       const color_random = randomColor();
+
       route.segments.forEach(it => {
-        const m_polyline = new google.maps.Polyline({
-          strokeColor : color_random,
-          strokeOpacity: 1.0,
-          strokeWeight: 5,
-        });
-
         drawSingleSegment(segments[it[0]]);
-
       });
 
-
     });
-  });
+  }
 }
+
 // draw a single segment from a polyline encoding
 function drawSingleSegment(encoding){
   let array_latlng = google.maps.geometry.encoding.decodePath(encoding);
